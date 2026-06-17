@@ -1,7 +1,10 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using VEMS_RDLC_API.Data;
 using VEMS_RDLC_API.Repositories;
 using VEMS_RDLC_API.Services;
+
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register Services
 builder.Services.AddScoped<IChallanRepository, ChallanRepository>();
 builder.Services.AddScoped<IChallanService, ChallanService>();
+builder.Services.AddScoped<IChallanReportService, ChallanReportService>();
 
 // CORS
 builder.Services.AddCors(options =>

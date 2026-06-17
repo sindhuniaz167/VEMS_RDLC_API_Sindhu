@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VEMS_RDLC_API.Models
 {
@@ -8,17 +9,17 @@ namespace VEMS_RDLC_API.Models
     {
         // Students Table Fields
         public int StudentID { get; set; }
-        public string RegistrationNo { get; set; }
+        public string? RegistrationNo { get; set; }
         public string StudentName { get; set; }
-        public string MobileNo { get; set; }
-        public string Email { get; set; }
+        public string? MobileNo { get; set; }
+        public string? Email { get; set; }
         public bool Student_IsActive { get; set; }
         public DateTime Student_CreatedOn { get; set; }
 
         // Challans Table Fields
         public int Challan_Uid { get; set; }
         public string ChallanNo { get; set; }
-        public int Challan_StudentID { get; set; }
+        public int? Challan_StudentID { get; set; }
         public int? StructureID { get; set; }
         public string Semester { get; set; }
         public short AcademicYear { get; set; }
@@ -30,15 +31,15 @@ namespace VEMS_RDLC_API.Models
         public decimal NetPayable { get; set; }
         public decimal AmountPaid { get; set; }
         public string Status { get; set; }
-        public string Remarks { get; set; }
+        public string? Remarks { get; set; }
         public bool Challan_IsActive { get; set; }
         public int Challan_CreatedBy { get; set; }
         public DateTime Challan_CreatedAt { get; set; }
         public int? Challan_UpdatedBy { get; set; }
         public DateTime? Challan_UpdatedAt { get; set; }
         public int? ApplicationUid { get; set; }
-        public string ChallanMonth { get; set; }
-        public string ChallanYear { get; set; }
+        public string? ChallanMonth { get; set; }
+        public string? ChallanYear { get; set; }
 
         // Aggregated Totals
         public int TotalDetailCount { get; set; }
@@ -118,6 +119,7 @@ namespace VEMS_RDLC_API.Models
         public DateTime? Detail7_CreatedAt { get; set; }
 
         // Computed Properties
+        [NotMapped]
         public decimal BalanceDue => NetPayable - AmountPaid;
 
         // Helper method to get all details as a list

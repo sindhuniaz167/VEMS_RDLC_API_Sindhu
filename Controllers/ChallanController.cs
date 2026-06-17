@@ -12,69 +12,23 @@ namespace VEMS_RDLC_API.Controllers
     public class ChallanController : ControllerBase
     {
         private readonly IChallanService _service;
+        private readonly IChallanReportService _reportService;
 
-        public ChallanController(IChallanService service)
+        public ChallanController(IChallanService service, IChallanReportService reportService)
         {
             _service = service;
+            _reportService = reportService;
         }
 
         /// <summary>
         /// Get challan report data for RDLC
         /// </summary>
-        [HttpGet("report/{challanNo}")]
-        public async Task<ActionResult<ApiResponse<ChallanData>>> GetChallanReport(string challanNo)
-        {
-            try
-            {
-                // Validate input
-                if (string.IsNullOrWhiteSpace(challanNo))
-                {
-                    return BadRequest(new ApiResponse<ChallanData>
-                    {
-                        Success = false,
-                        Message = "Challan number is required",
-                        Errors = new List<string> { "Challan number cannot be empty" }
-                    });
-                }
-
-                // Get report data
-                var reportData = await _service.GetChallanReportDataAsync(challanNo);
-
-                if (reportData == null)
-                {
-                    return NotFound(new ApiResponse<ChallanData>
-                    {
-                        Success = false,
-                        Message = "Challan not found",
-                        Errors = new List<string> { $"No challan found with number: {challanNo}" }
-                    });
-                }
-
-                return Ok(new ApiResponse<ChallanData>
-                {
-                    Success = true,
-                    Message = "Report data retrieved successfully",
-                    Data = reportData,
-                    Errors = new List<string>()
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponse<ChallanData>
-                {
-                    Success = false,
-                    Message = "Error retrieving challan report",
-                    Data = null,
-                    Errors = new List<string> { ex.Message }
-                });
-            }
-        }
-
+       
         /// <summary>
-        /// Print challan (RDLC Report)
+        /// Download challan as PDF (RDLC Report)
         /// </summary>
-        [HttpGet("print/{challanNo}")]
-        public async Task<IActionResult> PrintChallan(string challanNo)
+        [HttpGet("{challanNo}")]
+        public async Task<IActionResult> DownloadChallanPdf(string challanNo)
         {
             try
             {
@@ -84,21 +38,9 @@ namespace VEMS_RDLC_API.Controllers
                 }
 
                 var reportData = await _service.GetChallanReportDataAsync(challanNo);
+                var pdfBytes = _reportService.GeneratePdf(reportData);
 
-                if (reportData == null)
-                {
-                    return NotFound(new { error = "Challan not found" });
-                }
-
-                // Return data for RDLC report
-                return Ok(new
-                {
-                    success = true,
-                    message = "RDLC Report data retrieved successfully",
-                    data = reportData,
-                    reportPath = "Reports/Challan.rdlc",
-                    datasetName = "VEMSDataSet"
-                });
+                return File(pdfBytes, "application/pdf", $"Challan-{challanNo}.pdf");
             }
             catch (Exception ex)
             {
@@ -109,5 +51,6 @@ namespace VEMS_RDLC_API.Controllers
                 });
             }
         }
+       
     }
 }

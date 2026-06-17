@@ -26,17 +26,16 @@ namespace VEMS_RDLC_API.Repositories
                 // Execute stored procedure
                 var param = new SqlParameter("@ChallanNo", challanNo);
 
-                var result = await _context.ChallanData
+                // Stored procedures are non-composable; materialize before FirstOrDefault
+                var results = await _context.ChallanData
                     .FromSqlRaw("EXEC GetChallanData @ChallanNo", param)
-                    .FirstOrDefaultAsync();
+                    .ToListAsync();
 
-                return result;
+                return results.FirstOrDefault();
             }
             catch (Exception ex)
             {
-                // Log error
-                Console.WriteLine($"Error in GetChallanReportDataAsync: {ex.Message}");
-                return null;
+                throw new Exception($"Failed to execute GetChallanData for challan '{challanNo}': {ex.Message}", ex);
             }
         }
     }
