@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using VEMS_RDLC_API.Models;
 using VEMS_RDLC_API.Services;
 
 namespace VEMS_RDLC_API.Controllers
@@ -12,22 +10,16 @@ namespace VEMS_RDLC_API.Controllers
     public class ChallanController : ControllerBase
     {
         private readonly IChallanService _service;
-        private readonly IChallanReportService _reportService;
 
-        public ChallanController(IChallanService service, IChallanReportService reportService)
+        public ChallanController(IChallanService service)
         {
             _service = service;
-            _reportService = reportService;
         }
 
         /// <summary>
-        /// Get challan report data for RDLC
-        /// </summary>
-       
-        /// <summary>
         /// Download challan as PDF (RDLC Report)
         /// </summary>
-        [HttpGet("{challanNo}")]
+        [HttpGet]
         public async Task<IActionResult> DownloadChallanPdf(string challanNo)
         {
             try
@@ -37,8 +29,7 @@ namespace VEMS_RDLC_API.Controllers
                     return BadRequest(new { error = "Challan number is required" });
                 }
 
-                var reportData = await _service.GetChallanReportDataAsync(challanNo);
-                var pdfBytes = _reportService.GeneratePdf(reportData);
+                var pdfBytes = await _service.GeneratePdfAsync(challanNo);
 
                 return File(pdfBytes, "application/pdf", $"Challan-{challanNo}.pdf");
             }

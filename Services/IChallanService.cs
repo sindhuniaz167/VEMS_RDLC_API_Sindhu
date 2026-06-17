@@ -5,7 +5,8 @@ namespace VEMS_RDLC_API.Services
 {
     public interface IChallanService
     {
-        // Get Challan Report Data
         Task<ChallanData> GetChallanReportDataAsync(string challanNo);
+        byte[] GeneratePdf(ChallanData data);
+        Task<byte[]> GeneratePdfAsync(string challanNo);
     }
 }

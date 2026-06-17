@@ -1,6 +1,4 @@
 using System.Text;
-using Microsoft.EntityFrameworkCore;
-using VEMS_RDLC_API.Data;
 using VEMS_RDLC_API.Repositories;
 using VEMS_RDLC_API.Services;
 
@@ -13,14 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Database Configuration
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 // Register Services
 builder.Services.AddScoped<IChallanRepository, ChallanRepository>();
 builder.Services.AddScoped<IChallanService, ChallanService>();
-builder.Services.AddScoped<IChallanReportService, ChallanReportService>();
 
 // CORS
 builder.Services.AddCors(options =>

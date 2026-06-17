@@ -6,6 +6,6 @@ namespace VEMS_RDLC_API.Repositories
     public interface IChallanRepository
     {
         // Get Challan Report Data using Stored Procedure
-        Task<ChallanData> GetChallanReportDataAsync(string challanNo);
+        Task<ChallanData?> GetChallanReportDataAsync(string challanNo);
     }
 }
